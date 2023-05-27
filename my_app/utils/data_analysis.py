@@ -22,9 +22,9 @@ def remove_tags_emojis(text):
 
 
 # 云图绘制
-def create_wordcloud():
-    with open('../trash/content.txt', 'r', encoding='utf-8') as f:
-        text = remove_tags_emojis(f.read())
+def create_wordcloud(text):
+    # with open('../trash/content.txt', 'r', encoding='utf-8') as f:
+    #     text = remove_tags_emojis(f.read())
 
     stopwords = [line.rstrip() for line in open('./lib/stopwords.txt', 'r', encoding='utf-8')]
     seq_list = list(jieba.cut(text, cut_all=False))

@@ -7,7 +7,7 @@ import hashlib
 
 import json
 from tqdm import tqdm
-from lib.encrypt import encrypt
+from .lib.encrypt import encrypt
 from .data_analysis import remove_tags_emojis
 from .lib.zhihu_data import ZhihuUser
 

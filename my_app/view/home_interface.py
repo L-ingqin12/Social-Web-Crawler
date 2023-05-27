@@ -2,9 +2,11 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QBrush, QPainterPath, QPen
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QSpacerItem, QSizePolicy, QAction, \
+    QDialogButtonBox
 
-from qfluentwidgets import ScrollArea, isDarkTheme, FluentIcon, LineEdit, InfoBar, InfoBarPosition, DropDownPushButton
+from qfluentwidgets import ScrollArea, isDarkTheme, FluentIcon, LineEdit, InfoBar, InfoBarPosition, DropDownPushButton, \
+    Dialog, MessageBox
 
 from trash.untitled1 import Ui_MainWindow
 
@@ -18,7 +20,9 @@ from qfluentwidgets import (ScrollArea, PushButton, ToolButton, FluentIcon,
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame
 from qfluentwidgets import LineEdit, PrimaryPushButton
 
+from ..utils.lib.zhihu_data import ZhihuUser
 from ..utils.mongoDB_operator import MongoDB
+from ..utils.zhihu import ZhihuApi
 
 mongodb = None
 
@@ -114,6 +118,8 @@ class HomeInterface(ScrollArea, Ui_MainWindow):
         # self.vBoxLayout.setContentsMargins(0, 0, 0, 36)
         # self.vBoxLayout.setSpacing(5)
         self.vBoxLayout.addWidget(self.banner)
+
+        # self.banner.hide()
 
         # self.vBoxLayout.addWidget(self.Ui_DataBase)
 
@@ -293,52 +299,67 @@ class DataBaseWidget(QWidget):
     #     StyleSheet.HOME_INTERFACE.apply(self)
     def connect_database(self):
         global mongodb
-        database_url = self.database_url.text()
-        port = int(self.database_port.text())
-        username = self.database_username.text()
-        password = self.database_password.text()
-        db_name = self.database_dbname.text()
         try:
-            if username != "" and password != "":
-                mongodb = MongoDB(host=database_url, port=port, db_name=db_name, username=username, password=password)
-                # print("登录成功")
-            else:
-                mongodb = MongoDB(host=database_url, port=port, db_name=db_name)
+            database_url = self.database_url.text()
+            if not database_url:
+                raise Exception("please input the database_url")
+            port = int(self.database_port.text()) if self.database_port.text() else None
+            if port is None or port <= 0:
+                raise Exception("please input a valid database port")
+            username = self.database_username.text()
+            password = self.database_password.text()
+            db_name = self.database_dbname.text()
+            if not db_name:
+                raise Exception("please input the db_name")
+            # print(database_url, port, username, password, db_name)
 
-                # print("登录成功")
-            InfoBar.success(
-                title="success",
-                content="数据库连接成功",
-                orient=Qt.Horizontal,
-                isClosable=True,
-                position=InfoBarPosition.TOP,
-                duration=2000,
-                parent=self
-            )
-            print(mongodb)
+            if database_url and port and db_name:
+                if not username and not password:
+                    mongodb = MongoDB(host=database_url, port=port, db_name=db_name, username=username,
+                                      password=password)
+                    # print("登录成功")
+                else:
+                    mongodb = MongoDB(host=database_url, port=port, db_name=db_name)
+
+                    # print("登录成功")
+                InfoBar.success(
+                    title="success",
+                    content="数据库连接成功",
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.TOP,
+                    duration=2000,
+                    parent=self
+                )
+                assert mongodb, "failed to connect to database"
+            else:
+                raise Exception("please input the database_url and port and db_name")
         except Exception as e:
             InfoBar.error(
                 title="error",
-                content="e",
+                content=e,
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
-                duration=-1,  # won't disappear automatically
+                duration=2000,  # won't disappear automatically -1
                 parent=self
             )
             # print("Traceback (most recent call last):", e)
-            return None
-
-        return mongodb
+        #     return None
+        #
+        # return mongodb
 
 
 class ZhiHuUser(QWidget):
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.setFixedHeight(200)
         self.setupUi()
+        self.binding_button_click()
+
         # self.setTheme()
-        # StyleSheet.HOME_INTERFACE.apply(self)
+        StyleSheet.HOME_INTERFACE.apply(self)
 
     def setupUi(self):
         self.zhihu_user = QtWidgets.QVBoxLayout(self)
@@ -359,6 +380,7 @@ class ZhiHuUser(QWidget):
 
         self.user_id = LineEdit(self)
         self.user_id.setText("")
+        self.user_id.setClearButtonEnabled(True)
         self.user_id.setObjectName("user_id")
 
         self.get_uer_following = PrimaryPushButton(self)
@@ -415,6 +437,147 @@ class ZhiHuUser(QWidget):
         self.get_user_info.setText(_translate("get_user_info_by_uid", "用户信息"))
         self.get_user_activity.setText(_translate("get_user_info_by_uid", "用户行为"))
         self.get_user_about.setText(_translate("get_user_info_by_uid", "用户信息"))
+
+    def binding_button_click(self):
+        self.get_user_info.clicked.connect(self.user_info)
+        self.get_uer_following.clicked.connect(self.user_following)
+        self.get_user_answers.clicked.connect(self.user_answers)
+        self.get_user_activities.clicked.connect(self.user_activities)
+        self.get_user_follower.clicked.connect(self.user_follower)
+
+    def user_info(self):
+        user_id = self.user_id.text()
+        if len(user_id) == 0 :
+            # print(1)
+            #
+            InfoBar.error(
+                title="error",
+                content="请填写user_id后重试",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.NONE,
+                duration=2000,  # won't disappear automatically -1
+                parent=self
+            )
+            return
+        api = ZhihuApi()
+        data = api.get_user_profile(user_id)
+        # print(data)
+        self.showDialog(data=data, user_id=user_id)
+        pass
+
+    def user_following(self):
+        user_id = self.user_id.text()
+
+        pass
+
+    def user_answers(self):
+        pass
+
+    def user_activities(self):
+        pass
+
+    def user_follower(self):
+        pass
+
+    def showDialog(self, data, user_id):
+        title = self.tr(f'{user_id}的用户信息')
+        info = data
+        user = ZhihuUser(user_id=user_id, name=info["name"], gender=info["gender"],
+                         following=info["following_count"],
+                         follower=info["follower_count"], description=info["description"],
+                         answer_count=info["answer_count"],
+                         articles_count=info["articles_count"], ip_info=info["ip_info"],
+                         thank_count=info["thanked_count"],
+                         type=info["type"], voteup_count=info["voteup_count"], headline=info["headline"],
+                         following_favlists_count=info["following_favlists_count"],
+                         following_question_count=info["following_question_count"],
+                         following_topic_count=info["following_topic_count"],
+                         following_columns_count=info["following_columns_count"],
+                         question_count=info["question_count"],
+                         pins_count=info["pins_count"], favorite_count=info["favorite_count"],
+                         favorited_count=info["favorited_count"])
+
+        content = self.tr(user.list_all_members())
+        w = MessageBox(title, content, self.window())
+        w.yesButton.setText("保存至数据库")
+        w.cancelButton.setText("退出")
+        if mongodb==None:
+            w.yesButton.setEnabled(False)
+            w.yesButton.setToolTip("请配置数据库后重新尝试！")
+        # layout = QVBoxLayout(w)
+        #
+        # buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        # buttonBox.button(QDialogButtonBox.Ok).setText("保存至数据库")
+        # buttonBox.button(QDialogButtonBox.Cancel).setText("取消")
+        # layout.addWidget(buttonBox)
+        # w.exec_()
+        # button = QAction(self.tr('Action'))
+        #
+        # if mongodb == None:
+        #     button.setEnabled(False)
+        #     button.setToolTip("请配置数据库后重新尝试！")
+        # else:
+        #     button.triggered.connect(lambda: mongodb.insert(collection_name="zhihu_user_info", document={'user_id': user_id, 'data': data}))
+        # w.addAction(button)
+
+        if w.exec():
+            # self.tips_for_save_data(collection_name="zhihu_user_info", document={'user_id': user_id, 'data': data})
+            try:
+                mongodb.insert_one(collection_name="zhihu_user_info", document={'user_id': user_id, 'data': data})
+                InfoBar.success(
+                    title="success",
+                    content="数据保存成功！",
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.TOP,
+                    duration=2000,
+                    parent=self
+                )
+            except Exception as e:
+                InfoBar.error(
+                    title="error",
+                    content=e,
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.BOTTOM_RIGHT,
+                    duration=2000,  # won't disappear automatically -1
+                    parent=self
+                )
+            print("Yes button is clicked")
+        else:
+            print('Cancel button is pressed')
+
+    # def tips_for_save_data(self, collection_name, document):
+    #
+    #     infoBar = InfoBar(
+    #         icon=FluentIcon.SAVE,
+    #         title=self.tr('Tips'),
+    #         content=self.tr("是否需要存储到数据库."),
+    #         orient=Qt.Horizontal,
+    #         isClosable=True,
+    #         duration=-1,
+    #         position=InfoBarPosition.NONE,
+    #         parent=self
+    #     )
+    #     button = PushButton(self.tr('Action'))
+    #
+    #     if mongodb == None:
+    #         button.setEnabled(False)
+    #         button.setToolTip("请配置数据库后重新尝试！")
+    #     else:
+    #         button.clicked.connect(lambda: mongodb.insert(collection_name=collection_name, document=document))
+    #     infoBar.addWidget(button)
+    #     infoBar.setCustomBackgroundColor("white", "#2a2a2a")
+
+    # def changeLabelColor(self,color):
+    #     # 查找所有 QLABEL 控件
+    #     labels = self.findAllChildren(QLabel)
+    #
+    #     # 更新样式
+    #     for label in labels:
+    #         stylesheet = "color: %s;" % color
+    #         label.setStyleSheet(stylesheet)
 
 
 class ZhihuOther(QWidget):

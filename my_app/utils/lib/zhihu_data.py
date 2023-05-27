@@ -54,9 +54,13 @@ class ZhihuUser:
         self.favorited_count = favorited_count
 
     def list_all_members(self):
-
+        result = ''
         for key, value in self.__dict__.items():
-            print("{}:{}".format(key, value))
+            # print("{}:{}".format(key, value))
+            if value != None:
+                result += "{}:{}\n".format(key, value)
+
+        return result
 
     def __str__(self):
         """打印知乎用户"""
