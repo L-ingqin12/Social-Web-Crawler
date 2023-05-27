@@ -36,7 +36,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -163,6 +163,116 @@
      </item>
     </layout>
    </widget>
+   <widget class="PrimaryDropDownPushButton" name="get_user_activity">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>547</y>
+      <width>243</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>用户行为</string>
+    </property>
+   </widget>
+   <widget class="PrimaryDropDownPushButton" name="get_user_about">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>547</y>
+      <width>101</width>
+      <height>33</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>用户信息</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>310</y>
+      <width>731</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="zhihu_user" stretch="2,1">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="font">
+        <font>
+         <family>华文中宋</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>知乎用户</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="info" stretch="1,1">
+       <item>
+        <widget class="LineEdit" name="user_id">
+         <property name="whatsThis">
+          <string>userid</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="placeholderText">
+          <string>userid</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="buttonGroup">
+         <item row="1" column="0">
+          <widget class="PrimaryPushButton" name="get_uer_following">
+           <property name="text">
+            <string>用户关注列表</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="PrimaryPushButton" name="get_user_follower">
+           <property name="text">
+            <string>用户粉丝列表</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="PrimaryPushButton" name="get_user_answers">
+           <property name="text">
+            <string>用户回答信息</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="PrimaryPushButton" name="get_user_activities">
+           <property name="text">
+            <string>用户活动信息</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <widget class="PrimaryPushButton" name="get_user_info">
+           <property name="text">
+            <string>用户信息</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
   </widget>
  </widget>
  <customwidgets>
@@ -174,6 +284,11 @@
   <customwidget>
    <class>PrimaryPushButton</class>
    <extends>PushButton</extends>
+   <header>qfluentwidgets</header>
+  </customwidget>
+  <customwidget>
+   <class>PrimaryDropDownPushButton</class>
+   <extends>PrimaryPushButton</extends>
    <header>qfluentwidgets</header>
   </customwidget>
   <customwidget>

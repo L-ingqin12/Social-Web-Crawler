@@ -160,15 +160,159 @@
     </item>
    </layout>
   </widget>
-  <widget class="NavigationInterface" name="NavigationInterface">
+  <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>30</y>
-     <width>48</width>
-     <height>591</height>
+     <x>120</x>
+     <y>270</y>
+     <width>791</width>
+     <height>351</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QGroupBox { border: 1px solid gray; border-radius: 9px; margin-top: 0.5em;} 
+                               QGroupBox::title {subcontrol-origin: margin; left: 10px; padding: 0 3px 0 3px;}</string>
+   </property>
+   <property name="title">
+    <string>GroupBox</string>
+   </property>
+   <widget class="QWidget" name="verticalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>751</width>
+      <height>241</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="ZhiHuOther" stretch="1,2,2">
+     <item>
+      <layout class="QHBoxLayout" name="Hot" stretch="3,1">
+       <item>
+        <widget class="QLabel" name="label_hot">
+         <property name="font">
+          <font>
+           <family>华文中宋</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>知乎热搜</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PrimaryPushButton" name="get_hot">
+         <property name="text">
+          <string>获取热搜</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="Topic" stretch="2,1">
+       <item>
+        <widget class="QLabel" name="label_topic">
+         <property name="font">
+          <font>
+           <family>华文中宋</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>知乎话题</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="TopicBox" stretch="2,1,2">
+         <item>
+          <widget class="LineEdit" name="Topic_id">
+           <property name="placeholderText">
+            <string>topic_id</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="PrimaryPushButton" name="get_topic">
+           <property name="text">
+            <string>获取话题相关</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="fill_topic">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="question" stretch="0,0">
+       <item>
+        <widget class="QLabel" name="label_question">
+         <property name="font">
+          <font>
+           <family>华文中宋</family>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>知乎问题回答</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="questionBox" stretch="2,1,2">
+         <item>
+          <widget class="LineEdit" name="question_id"/>
+         </item>
+         <item>
+          <widget class="PrimaryPushButton" name="get_question_answers">
+           <property name="text">
+            <string>获取所有回答</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="fill_question">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
   </widget>
  </widget>
  <customwidgets>
@@ -180,11 +324,6 @@
   <customwidget>
    <class>PrimaryPushButton</class>
    <extends>PushButton</extends>
-   <header>qfluentwidgets</header>
-  </customwidget>
-  <customwidget>
-   <class>NavigationInterface</class>
-   <extends>QWidget</extends>
    <header>qfluentwidgets</header>
   </customwidget>
   <customwidget>

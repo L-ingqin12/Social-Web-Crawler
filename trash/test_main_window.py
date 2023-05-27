@@ -10,18 +10,8 @@ from qframelesswindow import FramelessWindow
 from my_app.view.title_bar import CustomTitleBar
 from my_app.view.gallery_interface import GalleryInterface
 from my_app.view.home_interface import HomeInterface
-from my_app.view.basic_input_interface import BasicInputInterface
-from my_app.view.date_time_interface import DateTimeInterface
-from my_app.view.dialog_interface import DialogInterface
-from my_app.view.layout_interface import LayoutInterface
-from my_app.view.icon_interface import IconInterface
-from my_app.view.material_interface import MaterialInterface
-from my_app.view.menu_interface import MenuInterface
-from my_app.view.scroll_interface import ScrollInterface
-from my_app.view.status_info_interface import StatusInfoInterface
+
 from my_app.view.setting_interface import SettingInterface, cfg
-from my_app.view.text_interface import TextInterface
-from my_app.view.view_interface import ViewInterface
 from my_app.common.config import SUPPORT_URL
 from my_app.components.avatar_widget import AvatarWidget
 from my_app.common.icon import Icon
