@@ -75,18 +75,8 @@ class MainWindow(FramelessWindow):
 
         # create sub interface
         self.homeInterface = HomeInterface(self)
-        # self.iconInterface = IconInterface(self)
-        # self.basicInputInterface = BasicInputInterface(self)
-        # self.dateTimeInterface = DateTimeInterface(self)
-        # self.dialogInterface = DialogInterface(self)
-        # self.layoutInterface = LayoutInterface(self)
-        # self.menuInterface = MenuInterface(self)
-        # self.materialInterface = MaterialInterface(self)
-        # self.scrollInterface = ScrollInterface(self)
-        # self.statusInfoInterface = StatusInfoInterface(self)
+
         self.settingInterface = SettingInterface(self)
-        # self.textInterface = TextInterface(self)
-        # self.viewInterface = ViewInterface(self)
 
         # initialize layout
         self.initLayout()
@@ -117,14 +107,6 @@ class MainWindow(FramelessWindow):
         # add navigation items
         self.addSubInterface(
             self.homeInterface, 'homeInterface', FIF.HOME, self.tr('Home'), NavigationItemPosition.TOP)
-        # self.addSubInterface(
-        #     self.iconInterface, 'iconInterface', Icon.EMOJI_TAB_SYMBOLS, self.tr('Icons'), NavigationItemPosition.TOP)
-
-        # self.addSubInterface(
-        #     self.basicInputInterface, 'basicInputInterface', FIF.CHECKBOX, self.tr('Basic input'))
-        # self.addSubInterface(
-        #     self.dateTimeInterface, 'dateTimeInterface', FIF.DATE_TIME, self.tr('Date & time'))
-
 
         self.addSubInterface(
             self.settingInterface, 'settingInterface', FIF.SETTING, self.tr('Settings'), NavigationItemPosition.BOTTOM)
@@ -156,7 +138,7 @@ class MainWindow(FramelessWindow):
         self.resize(960, 780)
         self.setMinimumWidth(760)
         self.setWindowIcon(QIcon(':/gallery/images/logo.png'))
-        self.setWindowTitle('Social-Web-Scrapping')
+        self.setWindowTitle('Social Web Crawler')
         self.titleBar.setAttribute(Qt.WA_StyledBackground)
 
         desktop = QApplication.desktop().availableGeometry()

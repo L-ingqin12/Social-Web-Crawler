@@ -1,15 +1,22 @@
 # coding:utf-8
+from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QBrush, QPainterPath
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout
 
-from qfluentwidgets import ScrollArea, isDarkTheme, FluentIcon
+from qfluentwidgets import ScrollArea, isDarkTheme, FluentIcon, LineEdit
+
+from trash.untitled1 import Ui_MainWindow
+from .gallery_interface import GalleryInterface
 from ..common.config import cfg, HELP_URL, REPO_URL, EXAMPLE_URL, FEEDBACK_URL
 from ..common.icon import Icon, FluentIconBase
 from ..components.link_card import LinkCardView
 from ..components.sample_card import SampleCardView
 from ..common.style_sheet import StyleSheet
-
+from qfluentwidgets import (ScrollArea, PushButton, ToolButton, FluentIcon,
+                            isDarkTheme, IconWidget, Theme, ToolTipFilter)
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame
+from qfluentwidgets import LineEdit, PrimaryPushButton
 
 class BannerWidget(QWidget):
     """ Banner widget """
@@ -18,7 +25,7 @@ class BannerWidget(QWidget):
         super().__init__(parent=parent)
         self.setFixedHeight(336)
         self.vBoxLayout = QVBoxLayout(self)
-        self.galleryLabel = QLabel('Social Web Scrapping', self)
+        self.galleryLabel = QLabel('Social Web Crawler', self)
         self.banner = QPixmap(':/gallery/images/header1.png')
         self.linkCardView = LinkCardView(self)
 
@@ -26,17 +33,11 @@ class BannerWidget(QWidget):
 
         self.vBoxLayout.setSpacing(0)
         self.vBoxLayout.setContentsMargins(0, 20, 0, 0)
+
         self.vBoxLayout.addWidget(self.galleryLabel)
         self.vBoxLayout.addWidget(self.linkCardView, 1, Qt.AlignBottom)
         self.vBoxLayout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
-        # self.linkCardView.addCard(
-        #     ':/gallery/images/logo.png',
-        #     self.tr('Getting started'),
-        #     self.tr('An overview of app development options and samples.'),
-        #     HELP_URL
-        # )
-        #
         self.linkCardView.addCard(
             FluentIcon.GITHUB,
             self.tr('GitHub repo'),
@@ -44,21 +45,15 @@ class BannerWidget(QWidget):
                 'Social web crawler captures and analyzes data from Zhihu and Weibo'),
             REPO_URL
         )
-        #
-        # self.linkCardView.addCard(
-        #     FluentIcon.CODE,
-        #     self.tr('Code samples'),
-        #     self.tr(
-        #         'Find samples that demonstrate specific tasks, features and APIs.'),
-        #     EXAMPLE_URL
-        # )
+        self.themeButton = ToolButton(FluentIcon.CONSTRACT, self)
+        self.vBoxLayout.addWidget(self.themeButton, 0, Qt.AlignRight)
+        self.themeButton.installEventFilter(ToolTipFilter(self.themeButton))
+        self.themeButton.setToolTip(self.tr('切换主题'))
+        self.themeButton.clicked.connect(self.toggleTheme)
 
-        # self.linkCardView.addCard(
-        #     FluentIcon.FEEDBACK,
-        #     self.tr('Send feedback'),
-        #     self.tr('Help us improve PyQt-Fluent-Widgets by providing feedback.'),
-        #     FEEDBACK_URL
-        # )
+    def toggleTheme(self):
+        theme = Theme.LIGHT if isDarkTheme() else Theme.DARK
+        cfg.set(cfg.themeMode, theme)
 
     def paintEvent(self, e):
         super().paintEvent(e)
@@ -71,9 +66,9 @@ class BannerWidget(QWidget):
         path.setFillRule(Qt.WindingFill)
         w, h = self.width(), 200
         path.addRoundedRect(QRectF(0, 0, w, h), 10, 10)
-        path.addRect(QRectF(0, h-50, 50, 50))
-        path.addRect(QRectF(w-50, 0, 50, 50))
-        path.addRect(QRectF(w-50, h-50, 50, 50))
+        path.addRect(QRectF(0, h - 50, 50, 50))
+        path.addRect(QRectF(w - 50, 0, 50, 50))
+        path.addRect(QRectF(w - 50, h - 50, 50, 50))
         path = path.simplified()
 
         # draw background color
@@ -89,7 +84,7 @@ class BannerWidget(QWidget):
         painter.fillPath(path, QBrush(pixmap))
 
 
-class HomeInterface(ScrollArea):
+class HomeInterface(ScrollArea, Ui_MainWindow):
     """ Home interface """
 
     def __init__(self, parent=None):
@@ -97,7 +92,7 @@ class HomeInterface(ScrollArea):
         self.banner = BannerWidget(self)
         self.view = QWidget(self)
         self.vBoxLayout = QVBoxLayout(self.view)
-
+        self.dataBase = DataBaseWidget(self)
         self.__initWidget()
         self.loadSamples()
 
@@ -112,273 +107,136 @@ class HomeInterface(ScrollArea):
         self.vBoxLayout.setContentsMargins(0, 0, 0, 36)
         self.vBoxLayout.setSpacing(40)
         self.vBoxLayout.addWidget(self.banner)
-        self.vBoxLayout.setAlignment(Qt.AlignTop)
+        self.vBoxLayout.addWidget(self.dataBase)
+
+        # self.vBoxLayout.setAlignment(Qt.AlignTop)
 
     def loadSamples(self):
         """ load samples """
-        # basic input samples
-        basicInputView = SampleCardView(
-            self.tr("Basic input samples"), self.view)
-        basicInputView.addSampleCard(
-            icon=":/gallery/images/controls/Button.png",
-            title="Button",
-            content=self.tr(
-                "A control that responds to user input and emit clicked signal."),
-            routeKey="basicInputInterface",
-            index=0
-        )
-        basicInputView.addSampleCard(
-            icon=":/gallery/images/controls/Checkbox.png",
-            title="CheckBox",
-            content=self.tr("A control that a user can select or clear."),
-            routeKey="basicInputInterface",
-            index=4
-        )
-        basicInputView.addSampleCard(
-            icon=":/gallery/images/controls/ComboBox.png",
-            title="ComboBox",
-            content=self.tr(
-                "A drop-down list of items a user can select from."),
-            routeKey="basicInputInterface",
-            index=6
-        )
-        basicInputView.addSampleCard(
-            icon=":/gallery/images/controls/DropDownButton.png",
-            title="DropDownButton",
-            content=self.tr(
-                "A button that displays a flyout of choices when clicked."),
-            routeKey="basicInputInterface",
-            index=8
-        )
-        basicInputView.addSampleCard(
-            icon=":/gallery/images/controls/RadioButton.png",
-            title="RadioButton",
-            content=self.tr(
-                "A control that allows a user to select a single option from a group of options."),
-            routeKey="basicInputInterface",
-            index=10
-        )
-        basicInputView.addSampleCard(
-            icon=":/gallery/images/controls/Slider.png",
-            title="Slider",
-            content=self.tr(
-                "A control that lets the user select from a range of values by moving a Thumb control along a track."),
-            routeKey="basicInputInterface",
-            index=11
-        )
-        basicInputView.addSampleCard(
-            icon=":/gallery/images/controls/SplitButton.png",
-            title="SplitButton",
-            content=self.tr(
-                "A two-part button that displays a flyout when its secondary part is clicked."),
-            routeKey="basicInputInterface",
-            index=12
-        )
-        basicInputView.addSampleCard(
-            icon=":/gallery/images/controls/ToggleSwitch.png",
-            title="SwitchButton",
-            content=self.tr(
-                "A switch that can be toggled between 2 states."),
-            routeKey="basicInputInterface",
-            index=14
-        )
-        basicInputView.addSampleCard(
-            icon=":/gallery/images/controls/ToggleButton.png",
-            title="ToggleButton",
-            content=self.tr(
-                "A button that can be switched between two states like a CheckBox."),
-            routeKey="basicInputInterface",
-            index=15
-        )
-        self.vBoxLayout.addWidget(basicInputView)
 
-        # date time samples
-        dateTimeView = SampleCardView(self.tr('Date & time samples'), self.view)
-        dateTimeView.addSampleCard(
-            icon=":/gallery/images/controls/DatePicker.png",
-            title="DatePicker",
-            content=self.tr("A control that lets a user pick a date value."),
-            routeKey="dateTimeInterface",
-            index=0
-        )
-        dateTimeView.addSampleCard(
-            icon=":/gallery/images/controls/TimePicker.png",
-            title="TimePicker",
-            content=self.tr(
-                "A configurable control that lets a user pick a time value."),
-            routeKey="dateTimeInterface",
-            index=2
-        )
-        self.vBoxLayout.addWidget(dateTimeView)
 
-        # dialog samples
-        dialogView = SampleCardView(self.tr('Dialog samples'), self.view)
-        dialogView.addSampleCard(
-            icon=":/gallery/images/controls/Flyout.png",
-            title="Dialog",
-            content=self.tr("A frameless message dialog."),
-            routeKey="dialogInterface",
-            index=0
-        )
-        dialogView.addSampleCard(
-            icon=":/gallery/images/controls/ContentDialog.png",
-            title="MessageBox",
-            content=self.tr("A message dialog with mask."),
-            routeKey="dialogInterface",
-            index=1
-        )
-        dialogView.addSampleCard(
-            icon=":/gallery/images/controls/ColorPicker.png",
-            title="ColorDialog",
-            content=self.tr("A dialog that allows user to select color."),
-            routeKey="dialogInterface",
-            index=2
-        )
-        self.vBoxLayout.addWidget(dialogView)
+class DataBaseWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        # self.setFixedHeight(336)
+        self.setupUi()
 
-        # layout samples
-        layoutView = SampleCardView(self.tr('Layout samples'), self.view)
-        layoutView.addSampleCard(
-            icon=":/gallery/images/controls/Grid.png",
-            title="FlowLayout",
-            content=self.tr(
-                "A layout arranges components in a left-to-right flow, wrapping to the next row when the current row is full."),
-            routeKey="layoutInterface",
-            index=0
-        )
-        self.vBoxLayout.addWidget(layoutView)
+    def setupUi(self):
+        self.setObjectName("widget")
+        self.label = QLabel(self)
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label.setFont(font)
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setObjectName("label")
 
-        # material samples
-        materialView = SampleCardView(self.tr('Material samples'), self.view)
-        materialView.addSampleCard(
-            icon=":/gallery/images/controls/Acrylic.png",
-            title="AcrylicLabel",
-            content=self.tr(
-                "A translucent material recommended for panel background."),
-            routeKey="materialInterface",
-            index=0
-        )
-        self.vBoxLayout.addWidget(materialView)
+        self.label_2 = QLabel(self)
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_2.setFont(font)
+        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_2.setObjectName("label_2")
 
-        # menu samples
-        menuView = SampleCardView(self.tr('Menu samples'), self.view)
-        menuView.addSampleCard(
-            icon=":/gallery/images/controls/MenuFlyout.png",
-            title="RoundMenu",
-            content=self.tr(
-                "Shows a contextual list of simple commands or options."),
-            routeKey="menuInterface",
-            index=0
-        )
-        self.vBoxLayout.addWidget(menuView)
+        self.label_3 = QLabel(self)
+        self.label_3.setGeometry(QtCore.QRect(110, 40, 731, 25))
+        font = QtGui.QFont()
+        font.setFamily("华文中宋")
+        font.setPointSize(14)
+        self.label_3.setFont(font)
+        self.label_3.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_3.setObjectName("label_3")
+        self.setGeometry(QtCore.QRect(110, 90, 741, 155))
 
-        # scroll samples
-        scrollView = SampleCardView(self.tr('Scrolling samples'), self.view)
-        scrollView.addSampleCard(
-            icon=":/gallery/images/controls/ScrollViewer.png",
-            title="ScrollArea",
-            content=self.tr(
-                "A container control that lets the user pan and zoom its content smoothly."),
-            routeKey="scrollInterface",
-            index=0
-        )
-        self.vBoxLayout.addWidget(scrollView)
+        self.label_4 = QLabel(self)
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_4.setFont(font)
+        self.label_4.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_4.setObjectName("label_4")
 
-        # state info samples
-        stateInfoView = SampleCardView(self.tr('Status & info samples'), self.view)
-        stateInfoView.addSampleCard(
-            icon=":/gallery/images/controls/ProgressRing.png",
-            title="StateToolTip",
-            content=self.tr(
-                "Shows the apps progress on a task, or that the app is performing ongoing work that does block user interaction."),
-            routeKey="statusInfoInterface",
-            index=0
-        )
-        stateInfoView.addSampleCard(
-            icon=":/gallery/images/controls/InfoBar.png",
-            title="InfoBar",
-            content=self.tr(
-                "An inline message to display app-wide status change information."),
-            routeKey="statusInfoInterface",
-            index=3
-        )
-        stateInfoView.addSampleCard(
-            icon=":/gallery/images/controls/ProgressBar.png",
-            title="ProgressBar",
-            content=self.tr(
-                "Shows the apps progress on a task, or that the app is performing ongoing work that doesn't block user interaction."),
-            routeKey="statusInfoInterface",
-            index=7
-        )
-        stateInfoView.addSampleCard(
-            icon=":/gallery/images/controls/ProgressRing.png",
-            title="ProgressRing",
-            content=self.tr(
-                "Shows the apps progress on a task, or that the app is performing ongoing work that doesn't block user interaction."),
-            routeKey="statusInfoInterface",
-            index=9
-        )
-        stateInfoView.addSampleCard(
-            icon=":/gallery/images/controls/ToolTip.png",
-            title="ToolTip",
-            content=self.tr(
-                "Displays information for an element in a pop-up window."),
-            routeKey="statusInfoInterface",
-            index=1
-        )
-        self.vBoxLayout.addWidget(stateInfoView)
+        self.label_5 = QLabel(self)
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_5.setFont(font)
+        self.label_5.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_5.setObjectName("label_5")
 
-        # text samples
-        textView = SampleCardView(self.tr('Text samples'), self.view)
-        textView.addSampleCard(
-            icon=":/gallery/images/controls/TextBox.png",
-            title="LineEdit",
-            content=self.tr("A single-line plain text field."),
-            routeKey="textInterface",
-            index=0
-        )
-        textView.addSampleCard(
-            icon=":/gallery/images/controls/NumberBox.png",
-            title="SpinBox",
-            content=self.tr(
-                "A text control used for numeric input and evaluation of algebraic equations."),
-            routeKey="textInterface",
-            index=1
-        )
-        textView.addSampleCard(
-            icon=":/gallery/images/controls/RichEditBox.png",
-            title="TextEdit",
-            content=self.tr(
-                "A rich text editing control that supports formatted text, hyperlinks, and other rich content."),
-            routeKey="textInterface",
-            index=6
-        )
-        self.vBoxLayout.addWidget(textView)
+        self.label_6 = QLabel(self)
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_6.setFont(font)
+        self.label_6.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_6.setObjectName("label_6")
 
-        # view samples
-        collectionView = SampleCardView(self.tr('View samples'), self.view)
-        collectionView.addSampleCard(
-            icon=":/gallery/images/controls/ListView.png",
-            title="ListView",
-            content=self.tr(
-                "A control that presents a collection of items in a vertical list."),
-            routeKey="viewInterface",
-            index=0
-        )
-        collectionView.addSampleCard(
-            icon=":/gallery/images/controls/DataGrid.png",
-            title="TableView",
-            content=self.tr(
-                "The DataGrid control provides a flexible way to display a collection of data in rows and columns."),
-            routeKey="viewInterface",
-            index=1
-        )
-        collectionView.addSampleCard(
-            icon=":/gallery/images/controls/TreeView.png",
-            title="TreeView",
-            content=self.tr(
-                "The TreeView control is a hierarchical list pattern with expanding and collapsing nodes that contain nested items."),
-            routeKey="viewInterface",
-            index=2
-        )
-        self.vBoxLayout.addWidget(collectionView)
+        self.gridLayout = QGridLayout(self)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout.setVerticalSpacing(34)
+        self.gridLayout.setObjectName("gridLayout")
+
+        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_2, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.label_4, 0, 2, 1, 1)
+        self.gridLayout.addWidget(self.label_5, 0, 3, 1, 1)
+        self.gridLayout.addWidget(self.label_6, 0, 4, 1, 1)
+
+        self.submit = PrimaryPushButton(self)
+        self.submit.setObjectName("submit")
+        self.gridLayout.addWidget(self.submit, 2, 2, 1, 1)
+
+        self.database_url = LineEdit(self)
+        self.database_url.setObjectName("database_url")
+        self.gridLayout.addWidget(self.database_url, 1, 0, 1, 1)
+
+        self.database_port = LineEdit(self)
+        self.database_port.setObjectName("database_port")
+        self.gridLayout.addWidget(self.database_port, 1, 1, 1, 1)
+
+        self.database_username = LineEdit(self)
+        self.database_username.setObjectName("database_username")
+        self.gridLayout.addWidget(self.database_username, 1, 2, 1, 1)
+
+        self.database_password = LineEdit(self)
+        self.database_password.setObjectName("database_password")
+        self.gridLayout.addWidget(self.database_password, 1, 3, 1, 1)
+
+        self.database_dbname = LineEdit(self)
+        self.database_dbname.setObjectName("database_dbname")
+        self.gridLayout.addWidget(self.database_dbname, 1, 4, 1, 1)
+
+        self.gridLayout.setColumnStretch(0, 2)
+        self.gridLayout.setColumnStretch(1, 1)
+        self.gridLayout.setColumnStretch(2, 2)
+        self.gridLayout.setColumnStretch(3, 2)
+        self.gridLayout.setColumnStretch(4, 1)
+        # self.gridLayout.setRowStretch(0, 1)
+        # self.gridLayout.setRowStretch(1, 1)
+        # self.gridLayout.setRowStretch(2, 3)
+        self.retranslateUi()
+
+    def retranslateUi(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.label_3.setText(_translate("MainWindow", "数据库设置"))
+        self.label_4.setText(_translate("MainWindow", "用户名"))
+        self.submit.setText(_translate("MainWindow", "确认"))
+        self.label.setText(_translate("MainWindow", "数据库url"))
+        self.label_2.setText(_translate("MainWindow", "port"))
+        self.label_5.setText(_translate("MainWindow", "密码"))
+        self.label_6.setText(_translate("MainWindow", "数据库名称"))
+
+
+

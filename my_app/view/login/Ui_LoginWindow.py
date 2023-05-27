@@ -67,8 +67,8 @@ class Ui_Form(object):
         # self.gridLayout.setObjectName("gridLayout")
 
 
-        # self.lineEdit = LineEdit(self.widget)
-        # self.lineEdit.setClearButtonEnabled(True)
+        self.lineEdit = LineEdit(self.widget)
+        self.lineEdit.setClearButtonEnabled(True)
         # self.lineEdit.setObjectName("lineEdit")
         # self.gridLayout.addWidget(self.lineEdit, 1, 0, 1, 1)
 

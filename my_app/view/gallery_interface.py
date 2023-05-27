@@ -85,13 +85,6 @@ class ToolBar(QWidget):
         self.subtitleLabel.setObjectName('subtitleLabel')
 
         self.themeButton.clicked.connect(self.toggleTheme)
-        # self.supportButton.clicked.connect(signalBus.supportSignal)
-        # self.documentButton.clicked.connect(
-        #     lambda: QDesktopServices.openUrl(QUrl(HELP_URL)))
-        # self.sourceButton.clicked.connect(
-        #     lambda: QDesktopServices.openUrl(QUrl(EXAMPLE_URL)))
-        # self.feedbackButton.clicked.connect(
-        #     lambda: QDesktopServices.openUrl(QUrl(FEEDBACK_URL)))
 
     def toggleTheme(self):
         theme = Theme.LIGHT if isDarkTheme() else Theme.DARK
@@ -176,6 +169,22 @@ class ExampleCard(QWidget):
 
 class GalleryInterface(ScrollArea):
     """ Gallery interface """
+
+    # def __init__(self, parent=None):
+    #     super().__init__(parent=parent)
+    #     self.view = QWidget(self)
+    #     self.vBoxLayout = QVBoxLayout(self.view)
+    #
+    #     self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+    #     self.setWidget(self.view)
+    #     self.setWidgetResizable(True)
+    #
+    #     self.vBoxLayout.setSpacing(30)
+    #     self.vBoxLayout.setAlignment(Qt.AlignTop)
+    #     self.vBoxLayout.setContentsMargins(36, 20, 36, 36)
+    #
+    #     self.view.setObjectName('view')
+    #     StyleSheet.GALLERY_INTERFACE.apply(self)
 
     def __init__(self, title: str, subtitle: str, parent=None):
         """
