@@ -8,23 +8,13 @@ from qfluentwidgets import FluentIcon as FIF
 from qframelesswindow import FramelessWindow
 
 from .title_bar import CustomTitleBar
-from .gallery_interface import GalleryInterface
+
 from .home_interface import HomeInterface
-from .basic_input_interface import BasicInputInterface
-from .date_time_interface import DateTimeInterface
-from .dialog_interface import DialogInterface
-from .layout_interface import LayoutInterface
-from .icon_interface import IconInterface
-from .material_interface import MaterialInterface
-from .menu_interface import MenuInterface
-from .scroll_interface import ScrollInterface
-from .status_info_interface import StatusInfoInterface
+
 from .setting_interface import SettingInterface, cfg
-from .text_interface import TextInterface
-from .view_interface import ViewInterface
+
 from ..common.config import SUPPORT_URL
-from ..components.avatar_widget import AvatarWidget
-from ..common.icon import Icon
+
 from ..common.signal_bus import signalBus
 from ..common.style_sheet import StyleSheet
 from ..common import resource
@@ -96,7 +86,7 @@ class MainWindow(FramelessWindow):
         self.widgetLayout.addWidget(self.stackWidget)
         self.widgetLayout.setContentsMargins(0, 48, 0, 0)
 
-        signalBus.switchToSampleCard.connect(self.switchToSample)
+        # signalBus.switchToSampleCard.connect(self.switchToSample)
         signalBus.supportSignal.connect(self.onSupport)
 
         self.navigationInterface.displayModeChanged.connect(
@@ -111,7 +101,7 @@ class MainWindow(FramelessWindow):
         self.addSubInterface(
             self.settingInterface, 'settingInterface', FIF.SETTING, self.tr('Settings'), NavigationItemPosition.BOTTOM)
 
-        #!IMPORTANT: don't forget to set the default route key if you enable the return button
+        # !IMPORTANT: don't forget to set the default route key if you enable the return button
         self.navigationInterface.setDefaultRouteKey(
             self.homeInterface.objectName())
 
@@ -121,7 +111,8 @@ class MainWindow(FramelessWindow):
             self.homeInterface.objectName())
         self.stackWidget.setCurrentIndex(0)
 
-    def addSubInterface(self, interface: QWidget, objectName: str, icon, text: str, position=NavigationItemPosition.SCROLL):
+    def addSubInterface(self, interface: QWidget, objectName: str, icon, text: str,
+                        position=NavigationItemPosition.SCROLL):
         """ add sub interface """
         interface.setObjectName(objectName)
         self.stackWidget.addWidget(interface)
@@ -143,7 +134,7 @@ class MainWindow(FramelessWindow):
 
         desktop = QApplication.desktop().availableGeometry()
         w, h = desktop.width(), desktop.height()
-        self.move(w//2 - self.width()//2, h//2 - self.height()//2)
+        self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
 
         StyleSheet.MAIN_WINDOW.apply(self)
 
@@ -152,15 +143,15 @@ class MainWindow(FramelessWindow):
 
     def resizeEvent(self, e):
         self.titleBar.move(46, 0)
-        self.titleBar.resize(self.width()-46, self.titleBar.height())
+        self.titleBar.resize(self.width() - 46, self.titleBar.height())
 
     def onSupport(self):
         QDesktopServices.openUrl(QUrl(SUPPORT_URL))
 
-    def switchToSample(self, routeKey, index):
-        """ switch to sample """
-        interfaces = self.findChildren(GalleryInterface)
-        for w in interfaces:
-            if w.objectName() == routeKey:
-                self.stackWidget.setCurrentWidget(w)
-                w.scrollToCard(index)
+    # def switchToSample(self, routeKey, index):
+    #     """ switch to sample """
+    #     interfaces = self.findChildren(GalleryInterface)
+    #     for w in interfaces:
+    #         if w.objectName() == routeKey:
+    #             self.stackWidget.setCurrentWidget(w)
+    #             w.scrollToCard(index)
