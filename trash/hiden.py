@@ -9,7 +9,7 @@ class Example(QWidget):
         super().__init__()
 
         # self.setWindowTitle('Auto Collapse Example')
-        self.resize(300, 300)
+        self.resize(50, 50)
         self.setWindowFlags(QtCore.Qt.Tool | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # self.setAttribute(Qt.WA_TranslucentBackground)
         # self.setWindowFlags()

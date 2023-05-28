@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtWidgets import QWidget
 from qfluentwidgets import LineEdit, PrimaryPushButton
 
-from my_app.common.style_sheet import StyleSheet
+from app.common.style_sheet import StyleSheet
 
 
 class GetUserInfoByUid(QWidget):

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>table_dialog</class>
- <widget class="QWidget" name="table_dialog">
+ <widget class="QDialog" name="table_dialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1085</width>
-    <height>691</height>
+    <width>960</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="2,2,2,2,1" columnstretch="2,2,1,4">
    <item row="0" column="0" rowspan="4" colspan="2">
     <widget class="TableWidget" name="table"/>
    </item>
@@ -23,9 +23,6 @@
       <string>词云分析</string>
      </property>
     </widget>
-   </item>
-   <item row="0" column="3" rowspan="4">
-    <widget class="PixmapLabel" name="show_label"/>
    </item>
    <item row="1" column="2">
     <widget class="PrimaryPushButton" name="timeline_analysis">
@@ -61,6 +58,9 @@
       <string>退出</string>
      </property>
     </widget>
+   </item>
+   <item row="0" column="3" rowspan="4">
+    <widget class="PixmapLabel" name="show_label"/>
    </item>
   </layout>
  </widget>

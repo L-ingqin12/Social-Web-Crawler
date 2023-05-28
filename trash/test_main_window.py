@@ -7,17 +7,17 @@ from qfluentwidgets import (NavigationInterface, NavigationItemPosition, Message
 from qfluentwidgets import FluentIcon as FIF
 from qframelesswindow import FramelessWindow
 
-from my_app.view.title_bar import CustomTitleBar
-from my_app.view.gallery_interface import GalleryInterface
-from my_app.view.home_interface import HomeInterface
+from app.view.title_bar import CustomTitleBar
+from app.view.gallery_interface import GalleryInterface
+from app.view.home_interface import HomeInterface
 
-from my_app.view.setting_interface import SettingInterface, cfg
-from my_app.common.config import SUPPORT_URL
-from my_app.components.avatar_widget import AvatarWidget
-from my_app.common.icon import Icon
-from my_app.common.signal_bus import signalBus
-from my_app.common.style_sheet import StyleSheet
-from my_app.common import resource
+from app.view.setting_interface import SettingInterface, cfg
+from app.common.config import SUPPORT_URL
+from app.components.avatar_widget import AvatarWidget
+from app.common.icon import Icon
+from app.common.signal_bus import signalBus
+from app.common.style_sheet import StyleSheet
+from app.common import resource
 
 
 class StackedWidget(QFrame):
