@@ -7,8 +7,10 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QWidget, QVBoxLayout
 from qfluentwidgets import PixmapLabel, PrimaryPushButton, TableWidget, InfoBar, InfoBarPosition, ToolButton, FluentIcon
 
-from utils.data_analysis import gender_analysis, create_wordcloud, create_city_hot, time_line_analysis
 import traceback
+
+from app.utils.data_analysis import create_wordcloud, gender_analysis, create_city_hot, time_line_analysis
+
 
 class MyDialog(QDialog):
     yesSignal = pyqtSignal()

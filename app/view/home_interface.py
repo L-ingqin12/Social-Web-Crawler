@@ -3,20 +3,15 @@ import datetime
 from collections import defaultdict
 
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtCore import Qt, QRectF, QTimer, QPropertyAnimation, QEasingCurve, QParallelAnimationGroup
+from PyQt5.QtCore import Qt, QRectF, QPropertyAnimation, QEasingCurve
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QBrush, QPainterPath, QPen
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QSpacerItem, QSizePolicy, QAction, \
-    QDialogButtonBox
+from PyQt5.QtWidgets import  QGridLayout
 
 from qfluentwidgets import ScrollArea, isDarkTheme, FluentIcon, LineEdit, InfoBar, InfoBarPosition, DropDownPushButton, \
     Dialog, MessageBox, IndeterminateProgressBar
 
-from trash.untitled1 import Ui_MainWindow
-from utils.data_analysis import remove_tags_emojis
-from utils.lib.weibo_data import WeiboUser, WeiboInfo
-from utils.weibo import WeiboApi, get_all_comment_weibo, date_format
 from .dialog_interface import MyDialog
-# from .dialog_interface import MyDialog
+
 
 from ..common.config import cfg, HELP_URL, REPO_URL, EXAMPLE_URL, FEEDBACK_URL
 from ..common.icon import Icon, FluentIconBase
@@ -28,8 +23,11 @@ from qfluentwidgets import (ScrollArea, PushButton, ToolButton, FluentIcon,
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame
 from qfluentwidgets import LineEdit, PrimaryPushButton
 
+from ..utils.data_analysis import remove_tags_emojis
+from ..utils.lib.weibo_data import WeiboUser, WeiboInfo
 from ..utils.lib.zhihu_data import ZhihuUser
 from ..utils.mongoDB_operator import MongoDB
+from ..utils.weibo import WeiboApi, get_all_comment_weibo, date_format
 from ..utils.zhihu import ZhihuApi, get_all_following, user_activities, format_time, get_all_follower, user_all_answers, \
     topic_all_discussions, question_all_answers
 import traceback
@@ -112,7 +110,7 @@ class BannerWidget(QWidget):
         painter.fillPath(path, QBrush(pixmap))
 
 
-class HomeInterface(ScrollArea, Ui_MainWindow):
+class HomeInterface(ScrollArea):
     """ Home interface """
 
     def __init__(self, parent=None):
@@ -158,11 +156,11 @@ class HomeInterface(ScrollArea, Ui_MainWindow):
         self.vBoxLayout.setSpacing(5)
         self.vBoxLayout.addWidget(self.banner)
 
+
+        StyleSheet.HOME_INTERFACE.apply(self)
         # self.timer = QTimer()
         # self.timer.start(5000)
         # self.timer.timeout.connect(self.collapse)
-        StyleSheet.HOME_INTERFACE.apply(self)
-
         # self.vBoxLayout.addWidget(self.Ui_DataBase)
 
         # self.vBoxLayout.setAlignment(Qt.AlignTop)
@@ -241,7 +239,7 @@ class HomeInterface(ScrollArea, Ui_MainWindow):
 class DataBaseWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.setFixedHeight(200)
+        self.setFixedHeight(220)
         self.setupUi()
         # StyleSheet.HOME_INTERFACE.apply(self)
         # self.setTheme()
@@ -269,7 +267,7 @@ class DataBaseWidget(QWidget):
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.label_2.setObjectName("label_2")
 
-        self.label_3 = QLabel(self.tr("name"), self)
+        self.label_3 = QLabel(self.tr("数据库设置"), self)
         self.label_3.setGeometry(QtCore.QRect(110, 40, 731, 25))
         font = QtGui.QFont()
         font.setFamily("华文中宋")
@@ -372,7 +370,7 @@ class DataBaseWidget(QWidget):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.label_3.setText(_translate("MainWindow", "数据库设置"))
+        # self.label_3.setText(_translate("MainWindow", "数据库设置"))
         self.label_4.setText(_translate("MainWindow", "用户名"))
         self.submit.setText(_translate("MainWindow", "确认"))
         self.label.setText(_translate("MainWindow", "数据库url"))
@@ -464,7 +462,7 @@ class ZhiHuUser(QWidget):
         self.buttonGroup = QtWidgets.QFormLayout()
         self.buttonGroup.setObjectName("buttonGroup")
 
-        self.label = QtWidgets.QLabel(self)
+        self.label = QtWidgets.QLabel(self.tr("知乎用户"),self)
         font = QtGui.QFont()
         font.setFamily("华文中宋")
         font.setPointSize(14)

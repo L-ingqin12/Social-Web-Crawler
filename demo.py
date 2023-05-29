@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QApplication
 from qfluentwidgets import FluentTranslator
 
 from app.common.config import cfg
-from my_app.view.main_window import MainWindow
+from app.view.main_window import MainWindow
 # from test_main_window import MainWindow
 
 # enable dpi scale
