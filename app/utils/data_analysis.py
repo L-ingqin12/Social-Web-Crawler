@@ -23,7 +23,7 @@ def remove_tags_emojis(text):
 
 # 云图绘制
 def create_wordcloud(text):
-    stopwords = [line.rstrip() for line in open('my_app/utils/lib/stopwords.txt', 'r', encoding='utf-8')]
+    stopwords = [line.rstrip() for line in open('app/utils/lib/stopwords.txt', 'r', encoding='utf-8')]
     seq_list = list(jieba.cut(text, cut_all=False))
     # # 统计词频
     # word_freq = {}
