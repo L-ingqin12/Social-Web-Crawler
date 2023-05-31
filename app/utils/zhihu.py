@@ -225,7 +225,7 @@ class ZhihuApi(object):
         root_comments = data['data']
         page = data['paging']
         total = page['totals']
-        # print(total)
+        print(total)
         # tqdm 进度条
         try:
             with tqdm(total=100, desc='comment_get', leave=True, ncols=100, unit='B', unit_scale=True) as pbar:

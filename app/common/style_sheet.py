@@ -15,7 +15,8 @@ class StyleSheet(StyleSheetBase, Enum):
     VIEW_INTERFACE = "view_interface"
     SETTING_INTERFACE = "setting_interface"
     GALLERY_INTERFACE = "gallery_interface"
+    DIALOG_INTERFACE = "dialog_interface"
 
     def path(self, theme=Theme.AUTO):
         theme = qconfig.theme if theme == Theme.AUTO else theme
-        return f":/gallery/qss/{theme.value.lower()}/{self.value}.qss"
+        return f"app/resource/qss/{theme.value.lower()}/{self.value}.qss"

@@ -1,4 +1,5 @@
 SettingInterface,
+
 #view {
     background-color: transparent;
 }
@@ -9,10 +10,15 @@ QScrollArea {
 }
 
 
+
 BannerWidget > #galleryLabel {
     font: 42px 'Segoe UI', 'Microsoft YaHei';
     font-weight: bold;
     background-color: transparent;
     color: white;
     padding-left: 28px;
+}
+
+QLabel {
+    color: white;
 }

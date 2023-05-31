@@ -9,6 +9,7 @@ from qfluentwidgets import PixmapLabel, PrimaryPushButton, TableWidget, InfoBar,
 
 import traceback
 
+from app.common.style_sheet import StyleSheet
 from app.utils.data_analysis import create_wordcloud, gender_analysis, create_city_hot, time_line_analysis
 
 
@@ -18,23 +19,26 @@ class MyDialog(QDialog):
 
     def __init__(self, headers, data, db, parent=None):
         super().__init__(parent=parent)
+        # self.wordcloud = None
+        # self.gridLayout = None
         self.headers = headers
         self.data = data
         self.db = db
         self.cols = len(self.headers)
-        print(len(self.data))
+        # print(len(self.data))
+        self.width = 410
+        self.height = 400
         self.rows = len(self.data)
+        self.table = TableWidget(self)
         self.setupUi()
         self.binding_click_button()
-        self.width=410
-        self.height=400
+        StyleSheet.DIALOG_INTERFACE.apply(self)
 
     def setupUi(self):
         self.resize(960, 700)
         self.gridLayout = QtWidgets.QGridLayout(self)
         self.gridLayout.setObjectName("gridLayout")
 
-        self.table = TableWidget(self)
         self.table.setObjectName("table")
 
         self.table.setColumnCount(len(self.headers))
@@ -154,7 +158,7 @@ class MyDialog(QDialog):
             pixmap = QPixmap('trash/gender_analysis.png')
             scaled_pixmap = pixmap.scaled(self.show_label.size(), aspectRatioMode=QtCore.Qt.KeepAspectRatio)
             self.show_label.setPixmap(scaled_pixmap)
-            self.show_label.setFixedSize(self.width,self.height)
+            self.show_label.setFixedSize(self.width, self.height)
         except Exception as e:
             print("Traceback", e)
             traceback.print_exc()
@@ -172,7 +176,7 @@ class MyDialog(QDialog):
             widget.resize(1000, 600)
             widget.show()
         except Exception as e:
-            print("Traceback",e)
+            print("Traceback", e)
             traceback.print_exc()
             return
         return

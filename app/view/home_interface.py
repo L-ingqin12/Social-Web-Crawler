@@ -240,6 +240,11 @@ class DataBaseWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.setFixedHeight(220)
+        self.label = QLabel(self)
+        self.label_2 = QLabel(self.tr("port"), self)
+
+        self.label_3 = QLabel(self.tr("数据库设置"), self)
+        self.label_4 = QLabel(self)
         self.setupUi()
         # StyleSheet.HOME_INTERFACE.apply(self)
         # self.setTheme()
@@ -247,7 +252,7 @@ class DataBaseWidget(QWidget):
     def setupUi(self):
         self.setGeometry(QtCore.QRect(110, 170, 721, 141))
         self.setObjectName("widget")
-        self.label = QLabel(self)
+
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
         font.setPointSize(11)
@@ -257,7 +262,7 @@ class DataBaseWidget(QWidget):
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
 
-        self.label_2 = QLabel(self.tr("port"), self)
+
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
         font.setPointSize(11)
@@ -267,7 +272,6 @@ class DataBaseWidget(QWidget):
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.label_2.setObjectName("label_2")
 
-        self.label_3 = QLabel(self.tr("数据库设置"), self)
         self.label_3.setGeometry(QtCore.QRect(110, 40, 731, 25))
         font = QtGui.QFont()
         font.setFamily("华文中宋")
@@ -277,7 +281,7 @@ class DataBaseWidget(QWidget):
         self.label_3.setObjectName("label_3")
         self.setGeometry(QtCore.QRect(110, 90, 741, 155))
 
-        self.label_4 = QLabel(self)
+
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")
         font.setPointSize(11)
@@ -370,7 +374,7 @@ class DataBaseWidget(QWidget):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        # self.label_3.setText(_translate("MainWindow", "数据库设置"))
+        self.label_3.setText(_translate("MainWindow", "数据库设置"))
         self.label_4.setText(_translate("MainWindow", "用户名"))
         self.submit.setText(_translate("MainWindow", "确认"))
         self.label.setText(_translate("MainWindow", "数据库url"))
@@ -409,7 +413,7 @@ class DataBaseWidget(QWidget):
                 else:
                     print("connect database without password and username")
                     mongodb = MongoDB(host=database_url, port=port, db_name=db_name)
-                print(mongodb)
+                # print(mongodb)
                 InfoBar.success(
                     title="success",
                     content="数据库连接成功",
@@ -531,6 +535,7 @@ class ZhiHuUser(QWidget):
         self.get_user_about.setText(_translate("get_user_info_by_uid", "用户信息"))
 
     def binding_button_click(self):
+        # self.get_user_info.click()
         self.get_user_info.clicked.connect(self.user_info)
         self.get_uer_following.clicked.connect(self.user_following)
         self.get_user_answers.clicked.connect(self.user_answers)
@@ -540,8 +545,6 @@ class ZhiHuUser(QWidget):
     def user_info(self):
         user_id = self.user_id.text()
         if len(user_id) == 0:
-            # print(1)
-            #
             InfoBar.error(
                 title="error",
                 content="请填写user_id后重试",
@@ -552,6 +555,15 @@ class ZhiHuUser(QWidget):
                 parent=self
             )
             return
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
         api = ZhihuApi()
         data = api.get_user_profile(user_id)
         self.showDialog(data=data, user_id=user_id)
@@ -570,6 +582,27 @@ class ZhiHuUser(QWidget):
                 parent=self
             )
             return
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
+        """
+        info = InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
+        info.show()
+        """
         try:
             users = get_all_following(user_id=user_id)
             data = []
@@ -605,8 +638,8 @@ class ZhiHuUser(QWidget):
 
             if dialog.exec():
                 try:
-                    mongodb.insert_one(collection_name="zhihu_user_following",
-                                       document={'user_id': user_id, 'data': users})
+                    mongodb.insert_one(collection_name="user",
+                                       document={'type':"following",'user_id': user_id, 'data': users})
                     InfoBar.success(
                         title="success",
                         content="数据保存成功！",
@@ -648,6 +681,15 @@ class ZhiHuUser(QWidget):
                 parent=self
             )
             return
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
         try:
             answers = user_all_answers(user_id)
             data = []
@@ -674,8 +716,8 @@ class ZhiHuUser(QWidget):
 
             if dialog.exec():
                 try:
-                    mongodb.insert_one(collection_name="zhihu_user_answers",
-                                       document={'user_id': user_id, 'data': answers})
+                    mongodb.insert_one(collection_name="user",
+                                       document={'type':"answer",'user_id': user_id, 'data': answers})
                     InfoBar.success(
                         title="success",
                         content="数据保存成功！",
@@ -717,6 +759,15 @@ class ZhiHuUser(QWidget):
                 parent=self
             )
             return
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
         try:
             activities = user_activities(user_id)
             data = []
@@ -755,8 +806,8 @@ class ZhiHuUser(QWidget):
 
             if dialog.exec():
                 try:
-                    mongodb.insert_one(collection_name="zhihu_user_activities",
-                                       document={'user_id': user_id, 'data': activities})
+                    mongodb.insert_one(collection_name="user",
+                                       document={"type":"activity",'user_id': user_id, 'data': activities})
                     InfoBar.success(
                         title="success",
                         content="数据保存成功！",
@@ -799,6 +850,15 @@ class ZhiHuUser(QWidget):
                 parent=self
             )
             return
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
         try:
             users = get_all_follower(user_id=user_id)
             data = []
@@ -833,8 +893,8 @@ class ZhiHuUser(QWidget):
 
             if dialog.exec():
                 try:
-                    mongodb.insert_one(collection_name="zhihu_user_follower",
-                                       document={'user_id': user_id, 'data': users})
+                    mongodb.insert_one(collection_name="user",
+                                       document={'type':"follower",'user_id': user_id, 'data': users})
                     InfoBar.success(
                         title="success",
                         content="数据保存成功！",
@@ -907,7 +967,7 @@ class ZhiHuUser(QWidget):
         if w.exec():
             # self.tips_for_save_data(collection_name="zhihu_user_info", document={'user_id': user_id, 'data': data})
             try:
-                mongodb.insert_one(collection_name="zhihu_user_info", document={'user_id': user_id, 'data': data})
+                mongodb.insert_one(collection_name="user_info", document={'source':"zhihu",'user_id': user_id, 'data': data})
                 InfoBar.success(
                     title="success",
                     content="数据保存成功！",
@@ -931,36 +991,6 @@ class ZhiHuUser(QWidget):
         else:
             print('Cancel button is pressed')
 
-    # def tips_for_save_data(self, collection_name, document):
-    #
-    #     infoBar = InfoBar(
-    #         icon=FluentIcon.SAVE,
-    #         title=self.tr('Tips'),
-    #         content=self.tr("是否需要存储到数据库."),
-    #         orient=Qt.Horizontal,
-    #         isClosable=True,
-    #         duration=-1,
-    #         position=InfoBarPosition.NONE,
-    #         parent=self
-    #     )
-    #     button = PushButton(self.tr('Action'))
-    #
-    #     if mongodb == None:
-    #         button.setEnabled(False)
-    #         button.setToolTip("请配置数据库后重新尝试！")
-    #     else:
-    #         button.clicked.connect(lambda: mongodb.insert(collection_name=collection_name, document=document))
-    #     infoBar.addWidget(button)
-    #     infoBar.setCustomBackgroundColor("white", "#2a2a2a")
-
-    # def changeLabelColor(self,color):
-    #     # 查找所有 QLABEL 控件
-    #     labels = self.findAllChildren(QLabel)
-    #
-    #     # 更新样式
-    #     for label in labels:
-    #         stylesheet = "color: %s;" % color
-    #         label.setStyleSheet(stylesheet)
 
 
 class ZhihuOther(QWidget):
@@ -1096,6 +1126,15 @@ class ZhihuOther(QWidget):
         self.get_zhihu_comments.clicked.connect(self._get_zhihu_comments)
 
     def _get_hot(self):
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
         try:
             zhihu = ZhihuApi()
             json = zhihu.get_hotlist()['data']
@@ -1127,8 +1166,8 @@ class ZhihuOther(QWidget):
 
             if dialog.exec():
                 try:
-                    mongodb.insert_one(collection_name="zhihu_hot_info",
-                                       document={'time': datetime.datetime.now(), 'data': json})
+                    mongodb.insert_one(collection_name="hot_info",
+                                       document={'source':"zhihu",'time': datetime.datetime.now(), 'data': json})
                     InfoBar.success(
                         title="success",
                         content="数据保存成功！",
@@ -1170,6 +1209,15 @@ class ZhihuOther(QWidget):
                 parent=self
             )
             return
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
         try:
             discussions = topic_all_discussions(topic_id=topic_id)
             data = []
@@ -1184,23 +1232,33 @@ class ZhihuOther(QWidget):
                 item['author'] = target['author']['name'] if 'author' in target else ""
                 item['user_id'] = target['author']['url_token'] if 'author' in target else ''
                 item['excerpt'] = remove_tags_emojis(target['excerpt']) if 'excerpt' in target else ''
+                gender =target['author']['gender'] if 'author' in target else -1
+                if gender == 0:
+                    gender = 'undefined'
+                elif gender == 1:
+                    gender = 'male'
+                elif gender == 2:
+                    gender = 'female'
+                else:
+                    gender = "unknown"
+                item['gender'] = gender
                 data.append(item)
 
             dialog = MyDialog(db=mongodb, data=data, headers=[key for key in data[0].keys()], parent=self)
             # dialog.resize(500, 700)
             dialog.timeline_analysis.setHidden(True)
-            dialog.gender_analysis.setHidden(True)
+            # dialog.gender_analysis.setHidden(True)
             dialog.city_hot.setHidden(True)
             dialog.wordcloud.setHidden(True)
-            dialog.show_label.setHidden(True)
-            dialog.gridLayout.setColumnStretch(0, 2)
-            dialog.gridLayout.setColumnStretch(1, 2)
-            dialog.gridLayout.setColumnStretch(2, 0)
-            dialog.gridLayout.setColumnStretch(3, 0)
+            # dialog.show_label.setHidden(True)
+            # dialog.gridLayout.setColumnStretch(0, 2)
+            # dialog.gridLayout.setColumnStretch(1, 2)
+            # dialog.gridLayout.setColumnStretch(2, 0)
+            # dialog.gridLayout.setColumnStretch(3, 0)
 
             if dialog.exec():
                 try:
-                    mongodb.insert_one(collection_name="zhihu_topic_discussions",
+                    mongodb.insert_one(collection_name="topic_discussions",
                                        document={'topic_id': topic_id, 'data': discussions})
                     InfoBar.success(
                         title="success",
@@ -1243,6 +1301,15 @@ class ZhihuOther(QWidget):
                 parent=self
             )
             return
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
         try:
             answers = question_all_answers(question_id)
             data = []
@@ -1269,7 +1336,7 @@ class ZhihuOther(QWidget):
 
             if dialog.exec():
                 try:
-                    mongodb.insert_one(collection_name="zhihu_question_answers",
+                    mongodb.insert_one(collection_name="question_answers",
                                        document={'question_id': question_id, 'data': answers})
                     InfoBar.success(
                         title="success",
@@ -1315,6 +1382,15 @@ class ZhihuOther(QWidget):
                 parent=self
             )
             return
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
         try:
             api = ZhihuApi()
             review_answers = api.get_answer_reviews(answer_id=answer_id, question_id=question_id)
@@ -1347,8 +1423,8 @@ class ZhihuOther(QWidget):
             dialog = MyDialog(db=mongodb, data=data, headers=[key for key in data[0].keys()], parent=self)
             if dialog.exec():
                 try:
-                    mongodb.insert_one(collection_name="zhihu_answer_comments",
-                                       document={'question_id': question_id,
+                    mongodb.insert_one(collection_name="comments",
+                                       document={'source':"zhihu_answer",'question_id': question_id,
                                                  'answer_id': answer_id,
                                                  'data': review_answers})
                     InfoBar.success(
@@ -1507,6 +1583,15 @@ class WeiBo(QWidget):
         self.get_weibo_comments.clicked.connect(self._get_weibo_comments)
 
     def _get_hot(self):
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
         try:
             weibo = WeiboApi()
             json = weibo.get_hot()
@@ -1526,8 +1611,8 @@ class WeiBo(QWidget):
                 dialog.gridLayout.setColumnStretch(3, 0)
                 if dialog.exec():
                     try:
-                        mongodb.insert_one(collection_name="weibo_hot_info",
-                                           document={'time': datetime.datetime.now(), 'data': data})
+                        mongodb.insert_one(collection_name="hot_info",
+                                           document={'source':'weibo','time': datetime.datetime.now(), 'data': data})
                         InfoBar.success(
                             title="success",
                             content="数据保存成功！",
@@ -1572,6 +1657,15 @@ class WeiBo(QWidget):
                 parent=self
             )
             return
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
         weibo = WeiboApi()
         data = weibo.get_user(uid=user_id)
         self.showDialog(data=data, user_id=user_id)
@@ -1590,6 +1684,15 @@ class WeiBo(QWidget):
                 parent=self
             )
             return
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
         try:
             weibo = WeiboApi()
             data = weibo.get_weibo_info(weibo_id=weibo_id)['status']
@@ -1654,6 +1757,16 @@ class WeiBo(QWidget):
                 parent=self
             )
             return
+        InfoBar.success(
+            title="success",
+            content="正在获取数据请稍后...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=2000,
+            parent=self
+        )
+        # InfoBar.show(self)
         try:
             comments = get_all_comment_weibo(weibo_id)
             data = []
@@ -1674,8 +1787,8 @@ class WeiBo(QWidget):
             dialog = MyDialog(db=mongodb, data=data, headers=[key for key in data[0].keys()], parent=self)
             if dialog.exec():
                 try:
-                    mongodb.insert_one(collection_name="weibo_comments",
-                                       document={'weibo_id': weibo_id,
+                    mongodb.insert_one(collection_name="comments",
+                                       document={'source':'weibo','weibo_id': weibo_id,
                                                  'data': comments})
                     InfoBar.success(
                         title="success",
@@ -1730,7 +1843,7 @@ class WeiBo(QWidget):
 
         if w.exec():
             try:
-                mongodb.insert_one(collection_name="weibo_user_info", document={'user_id': user_id, 'data': data})
+                mongodb.insert_one(collection_name="user_info", document={'source':"weibo",'user_id': user_id, 'data': info})
                 InfoBar.success(
                     title="success",
                     content="数据保存成功！",
