@@ -1,6 +1,6 @@
 {
     "Material": {
-        "AcrylicBlurRadius": 37
+        "AcrylicBlurRadius": 0
     },
     "Update": {
         "CheckUpdateAtStartUp": true
@@ -15,6 +15,6 @@
     },
     "QFluentWidgets": {
         "ThemeColor": "#ff009faa",
-        "ThemeMode": "Dark"
+        "ThemeMode": "Light"
     }
 }

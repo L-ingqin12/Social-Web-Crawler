@@ -1,11 +1,10 @@
+import json
 import time
 from collections import defaultdict
 
 import requests
-from bs4 import BeautifulSoup
 import hashlib
 
-import json
 from tqdm import tqdm
 from .lib.encrypt import encrypt
 from .data_analysis import remove_tags_emojis
@@ -480,10 +479,12 @@ def get_all_follower(user_id='zhiyiYo'):
             data = api.follower_info(user_id=user_id, offset=next_offset)
             # print(data)
             if data['paging']['next'] == next_url:
+                print(data['paging']['next'],next_url)
                 break
             followers = data['data']
             all_follwers.extend(followers)
             page = data['paging']
+            print(data)
     except Exception as e:
         print("Traceback", e)
         traceback.print_exc()
@@ -568,8 +569,8 @@ def question_all_answers(question_id):
 if __name__ == "__main__":
     # print(json.dumps(api.get_question_answer(question_id="599787027", offset=150), sort_keys=True, indent=4,
     #                  separators=(',', ':'), ensure_ascii=False))
-
-    # print(json.dumps(api.get_user_answer(user_id="zhiyiYo"), sort_keys=True, indent=4,
+    #
+    # print(json.dumps(api.follower_info(user_id="zhiyiYo",limit="3824"), sort_keys=True, indent=4,
     #                  separators=(',', ':'), ensure_ascii=False))
     # print(json.dumps(api.get_user_answer(user_id="zhiyiYo"), sort_keys=True, indent=4,
     #                  separators=(',', ':'), ensure_ascii=False))

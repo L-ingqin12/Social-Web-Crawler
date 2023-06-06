@@ -124,6 +124,8 @@
         <file>qss/dark/sample_card.qss</file>
         <file>qss/dark/setting_interface.qss</file>
         <file>qss/dark/view_interface.qss</file>
+        <file>qss/dark/dialog_interface.qss</file>
+<!--        <file>qss/dark/</file>-->
 
         <file>qss/light/gallery_interface.qss</file>
         <file>qss/light/home_interface.qss</file>
