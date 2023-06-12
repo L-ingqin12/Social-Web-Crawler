@@ -8,3 +8,5 @@ answer_id:3021348829
 weibo
 uid:1900698023
 weibo_id:4905352364036293
+
+pyinstaller --upx-dir "D:\Document\Desktop\graduation design\SocialWebScrapping\venv\Scripts" --add-data "venv\Lib\site-packages\wordcloud\stopwords;.\wordcloud" --add-data "venv/Lib/site-packages/pyecharts/datasets/;pyecharts/datasets/" --add-data "venv/Lib/site-packages/pyecharts/render/templates/;./pyecharts/render/templates/" -i logo.png demo.py --clean

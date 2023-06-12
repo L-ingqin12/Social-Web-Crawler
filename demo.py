@@ -1,43 +1,7 @@
 # coding:utf-8
 import sys
 import os
-import importlib
-import subprocess
-
-REQUIRED_LIBRARIES = ["requests", "numpy", "qfluentwidgets", "PyQt5", "jieba", "wordcloud", "matplotlib", "pyecharts"]
-
-
-def check_dependencies():
-    missing_libraries = []
-    for library in REQUIRED_LIBRARIES:
-        try:
-            importlib.import_module(library)
-        except ImportError:
-            missing_libraries.append(library)
-
-    if missing_libraries:
-        print(f"Missing dependencies: {', '.join(missing_libraries)}")
-        return 1  # 返回非零值表示有缺失的依赖库
-    else:
-        print("All dependencies are installed")
-        return 0  # 返回零值表示所有依赖库已安装
-
-
-def download_dependencies():
-    for library in REQUIRED_LIBRARIES:
-        print(f"Installing {library}")
-        subprocess.run(['pip', 'install', library])
-
-
-# 检测依赖库
-result = check_dependencies()
-
-if result == 1:
-    # 缺失依赖库，自动下载
-    download_dependencies()
-else:
-    # 所有依赖库已安装，继续执行程序的其他逻辑
-    print("Running the main program")
+import app.utils.enviroment_check
 
 from PyQt5.QtCore import Qt, QTranslator
 from PyQt5.QtGui import QFont
@@ -84,4 +48,5 @@ app.exec_()
 # TODO: 优化界面
 # TODO: 编写Test
 # TODO: 增加代理ip池
-# pyinstaller --upx-dir "D:\Document\Desktop\graduation design\SocialWebScrapping\venv\Scripts" -w -i logo.png demo.py --clean
+# pyinstaller --clean --upx-dir "D:\Document\Desktop\graduation design\SocialWebScrapping\venv\Scripts" -w -i logo.png demo.py
+# pyinstaller --upx-dir "D:\Document\Desktop\graduation design\SocialWebScrapping\venv\Scripts" --add-data "app/utils/lib/stopwords.txt;." --add-data "venv/Lib/site-packages/pyecharts/datasets/city_coordinates.json;." --add-data "venv/Lib/site-packages/pyecharts/datasets/countries_regions_db.json;." --add-data "venv/Lib/site-packages/pyecharts/datasets/map_filename.json;." -w -i logo.png --onefile demo.py --clean
