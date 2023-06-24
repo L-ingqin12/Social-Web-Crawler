@@ -226,49 +226,51 @@ class ZhihuApi(object):
         total = page['totals']
         print(total)
         # tqdm 进度条
-        try:
-            with tqdm(total=100, desc='comment_get', leave=True, ncols=100, unit='B', unit_scale=True) as pbar:
-                review = []
-                while not is_end:
-                    # print("主",root_comments)
-                    for root_comment in root_comments:
-                        pbar.update(1 / total * 100 if total != 0 else total)
-                        # print(root_comment)
-                        comment_id = root_comment['id']
-                        if "child_comments" in root_comment:
-                            root_comment.pop("child_comments")
-                        # else:
-                        review.append(root_comment)
-                        child_comment_is_end = False
-                        child_data = self.get_child_comments(session, comment_id)
-                        child_page = child_data['paging']
-                        # child_total = child_page['totals']
-                        child_comments = child_data['data']
-                        # print(child_total)
-                        # with tqdm(total=child_total, desc='child_comment_get', leave=True, ncols=100, unit='B',
-                        #           unit_scale=True) as pbar2:
 
-                        while not child_comment_is_end:
-                            # print("子",child_comments)
-                            # pbar.update(20 / child_total * 100 if child_total !=0 else child_total)
-                            for child_comment in child_comments:
-                                # print(child_comment)
-                                pbar.update(1 / total * 100 if total != 0 else total)
-                                if "child_comments" in child_comment:
-                                    child_comment.pop("child_comments")
-                                # else:
-                                review.append(child_comment)
-                            next_child_url = child_page['next']
-                            next_child_offset = next_child_url.split("=")[2].split("&")[0]
-                            next_child_limit = next_child_url.split("=")[1].split("&")[0]
-                            child_comment_is_end = child_page['is_end']
-                            if not child_comment_is_end:
-                                child_data = self.get_child_comments(session, comment_id, offset=next_child_offset,
-                                                                     limit=next_child_limit)
-                                # pbar2.update(int(next_child_limit)/child_total)
-                                child_page = child_data['paging']
-                                child_comments = child_data['data']
-                            time.sleep(0.5)
+        # with tqdm(total=100, desc='comment_get', leave=True, ncols=100, unit='B', unit_scale=True) as pbar:
+        review = []
+        while not is_end:
+            print("主",root_comments)
+
+            for root_comment in root_comments:
+                try:
+                    # pbar.update(1 / total * 100 if total != 0 else total)
+                    # print(root_comment)
+                    comment_id = root_comment['id']
+                    if "child_comments" in root_comment:
+                        root_comment.pop("child_comments")
+                    # else:
+                    review.append(root_comment)
+                    child_comment_is_end = False
+                    child_data = self.get_child_comments(session, comment_id)
+                    child_page = child_data['paging']
+                    # child_total = child_page['totals']
+                    child_comments = child_data['data']
+                    # print(child_total)
+                    # with tqdm(total=child_total, desc='child_comment_get', leave=True, ncols=100, unit='B',
+                    #           unit_scale=True) as pbar2:
+
+                    while not child_comment_is_end:
+                        # print("子",child_comments)
+                        # pbar.update(20 / child_total * 100 if child_total !=0 else child_total)
+                        for child_comment in child_comments:
+                            # print(child_comment)
+                            # pbar.update(1 / total * 100 if total != 0 else total)
+                            # if "child_comments" in child_comment:
+                            #     child_comment.pop("child_comments")
+                            # else:
+                            review.append(child_comment)
+                        next_child_url = child_page['next']
+                        next_child_offset = next_child_url.split("=")[2].split("&")[0]
+                        next_child_limit = next_child_url.split("=")[1].split("&")[0]
+                        child_comment_is_end = child_page['is_end']
+                        if not child_comment_is_end:
+                            child_data = self.get_child_comments(session, comment_id, offset=next_child_offset,
+                                                                 limit=next_child_limit)
+                            # pbar2.update(int(next_child_limit)/child_total)
+                            child_page = child_data['paging']
+                            child_comments = child_data['data']
+                        time.sleep(0.5)
                     next_url = page['next']
                     next_offset = next_url.split("=")[2].split("&")[0]
                     next_limit = next_url.split("=")[1].split("&")[0]
@@ -278,10 +280,10 @@ class ZhihuApi(object):
                         # pbar.update(int(next_limit) / total * 100)
                         page = data['paging']
                         root_comments = data['data']
-        except Exception as e:
-            print("Traceback",e)
-            traceback.print_exc()
-            return review
+                except Exception as e:
+                    print("Traceback",e)
+                    traceback.print_exc()
+                    return review
 
         return review
 
@@ -554,6 +556,7 @@ def question_all_answers(question_id):
     all_answers.extend(answers)
     # print(page['next'].split('=')[3].split('&')[0])
     while not is_end:
+        print(data)
         next_url = page['next']
         next_offset = next_url.split('=')[3].split('&')[0]
         is_end = page['is_end']

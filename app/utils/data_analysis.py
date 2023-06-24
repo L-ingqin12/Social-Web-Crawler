@@ -78,6 +78,9 @@ def create_city_hot(data):
                     '新疆': '新疆维吾尔自治区', '中国台湾': '台湾省', '中国香港': '香港特别行政区',
                     '中国澳门': '澳门特别行政区'}
     hot_map = {}
+    print(data)
+    if data == {}:
+        return
     for key, value in data.items():
         if key in province_map:
             hot_map.update({province_map[key]: data[key]})

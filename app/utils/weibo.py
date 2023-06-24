@@ -143,7 +143,7 @@ def get_all_comment_weibo(weibo_id='4806418774099867'):
         comments.extend(first['data']['data'])
         # print(first)
         while first['data']['max_id'] != 0:
-
+            print(first)
             max_id = first['data']['max_id']
             first = weibo.get_weibo_comments(weibo_id=weibo_id, page=2, max_id=max_id)
             time.sleep(random.randint(2, 7))

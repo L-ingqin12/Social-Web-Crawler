@@ -171,7 +171,9 @@ class MyDialog(QDialog):
                 city_count[i['ip']] += 1
         city_count = dict(city_count)
         try:
-            create_city_hot(city_count)
+            if create_city_hot(city_count) is None:
+
+                raise Exception("ip 信息为空，无法创建城市热力图")
             widget = CityWidget(self)
             widget.resize(1000, 600)
             widget.show()

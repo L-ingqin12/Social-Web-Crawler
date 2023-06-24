@@ -68,11 +68,11 @@ def download_dependencies():
 
 
 # 检测依赖库
-result = check_dependencies()
-
-if result == 1:
-    # 缺失依赖库，自动下载
-    download_dependencies()
-else:
-    # 所有依赖库已安装，继续执行程序的其他逻辑
-    print("Running the main program")
+# result = check_dependencies()
+#
+# if result == 1:
+#     # 缺失依赖库，自动下载
+#     download_dependencies()
+# else:
+#     # 所有依赖库已安装，继续执行程序的其他逻辑
+#     print("Running the main program")

@@ -35,6 +35,9 @@ class MongoDB:
     def delete_many(self, collection_name, filter):
         return self._db[collection_name].delete_many(filter)
 
+    def export_data(self,collection_name):
+        return self._db[collection_name].find()
+
     # 断开与MongoDB的连接
     def close(self):
         self._client.close()
