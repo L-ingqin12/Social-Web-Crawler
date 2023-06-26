@@ -788,6 +788,7 @@ class ZhiHuUser(QWidget):
         )
         try:
             activities = user_activities(user_id)
+            print(activities)
             data = []
             for activitie in activities:
                 item = {}
@@ -1506,7 +1507,8 @@ class ZhihuOther(QWidget):
                 item['created_time'] = format_time(review_answer['created_time'])
 
                 comment_tag = review_answer['comment_tag']
-                if len(comment_tag) > 1:
+                print(comment_tag)
+                if len(comment_tag) >= 1:
                     item['ip'] = comment_tag[0]['text'].replace('IP 属地', '') if comment_tag[0][
                                                                                   'type'] == 'ip_info' else "未识别"
                 author = review_answer['author']
@@ -1526,7 +1528,7 @@ class ZhihuOther(QWidget):
                 item['user_type'] = author['type']
                 item['content'] = remove_tags_emojis(review_answer['content'])
                 data.append(item)
-            print(review_answers)
+            # print(review_answers)
             if not data:
                 InfoBar.error(
                     title="error",

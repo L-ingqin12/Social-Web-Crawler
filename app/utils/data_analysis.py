@@ -80,7 +80,7 @@ def create_city_hot(data):
     hot_map = {}
     print(data)
     if data == {}:
-        return
+        return "ip为空"
     for key, value in data.items():
         if key in province_map:
             hot_map.update({province_map[key]: data[key]})
