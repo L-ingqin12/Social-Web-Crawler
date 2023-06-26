@@ -406,7 +406,10 @@ def user_activities(user_id="lu-xin-qiong"):
         # print(next_page)
         is_end = page['is_end']
         data = api.get_activities(user_id=user_id, offset=next_offset, page=next_page)
-        activities = data['data']
+        try:
+            activities = data['data']
+        except:
+            return all_activities
         # activities.pop(0) if activities !=[] else pass
         all_activities.extend(activities)
         page = data['paging']
